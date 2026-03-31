@@ -1,0 +1,42 @@
+{
+  "name": "calendar",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@auth/prisma-adapter": "^2.11.1",
+    "@fullcalendar/core": "^6.1.8",
+    "@fullcalendar/daygrid": "^6.1.8",
+    "@fullcalendar/interaction": "^6.1.8",
+    "@fullcalendar/react": "^6.1.8",
+    "@fullcalendar/timegrid": "^6.1.8",
+    "@headlessui/react": "^1.7.16",
+    "@heroicons/react": "^2.0.18",
+    "@prisma/client": "~5.22.0",
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "10.4.14",
+    "bcryptjs": "^3.0.3",
+    "eslint": "^9.7.0",
+    "eslint-config-next": "^16.2.1",
+    "moment-timezone": "^0.5.43",
+    "next": "^16.2.1",
+    "next-auth": "^4.24.13",
+    "postcss": "8.4.27",
+    "prisma": "~5.22.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tailwindcss": "3.3.3",
+    "typescript": "^6.0.2"
+  },
+  "packageManager": "yarn@4.13.0",
+  "devDependencies": {
+    "@types/bcryptjs": "^3.0.0"
+  }
+}
