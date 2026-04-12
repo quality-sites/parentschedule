@@ -50,12 +50,12 @@ export default function Header() {
               >
                 Log In
               </button>
-              <button 
-                onClick={() => signIn()}
+              <Link 
+                href="/auth/signin?type=register"
                 className="text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-full shadow-md shadow-indigo-200 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
               >
                 Sign Up
-              </button>
+              </Link>
             </>
           )}
         </div>

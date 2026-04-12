@@ -36,12 +36,12 @@ export default function LandingPage() {
                 </svg>
               </Link>
             ) : (
-              <button onClick={() => signIn()} className="group inline-flex items-center justify-center rounded-full py-3 px-8 text-sm font-semibold focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 bg-indigo-600 outline-indigo-600 text-white hover:bg-indigo-700 hover:-translate-y-1 hover:shadow-xl shadow-indigo-200 transition-all duration-300">
+              <Link href="/auth/signin?type=register" className="group inline-flex items-center justify-center rounded-full py-3 px-8 text-sm font-semibold focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 bg-indigo-600 outline-indigo-600 text-white hover:bg-indigo-700 hover:-translate-y-1 hover:shadow-xl shadow-indigo-200 transition-all duration-300">
                 Get Started for Free
                 <svg className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
-              </button>
+              </Link>
             )}
             <Link href="/how-to-use" className="group inline-flex ring-1 ring-slate-200 items-center justify-center rounded-full py-3 px-8 text-sm font-semibold focus:outline-none bg-white text-slate-900 hover:bg-gray-50 hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
               See How It Works

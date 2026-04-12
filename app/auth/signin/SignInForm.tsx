@@ -1,15 +1,30 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function SignInForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  
+  const [mode, setMode] = useState<'login' | 'register'>('login');
+  
+  // Sync URL params to local state robustly across client-side navigation
+  useEffect(() => {
+    if (searchParams?.get("type") === "register") {
+      setMode("register");
+    } else {
+      setMode("login");
+    }
+  }, [searchParams]);
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const isLogin = mode === "login";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,8 +50,12 @@ export default function SignInForm() {
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-sm">
       <div className="mb-6 text-center">
-        <h2 className="text-2xl font-normal text-gray-900">Sign in</h2>
-        <p className="text-sm text-gray-500 mt-1">Use your account to continue</p>
+        <h2 className="text-2xl font-bold text-gray-900">
+          {isLogin ? "Sign in" : "Sign up"}
+        </h2>
+        <p className="text-sm text-gray-500 mt-1">
+          {isLogin ? "Use your account to continue" : "Enter your details to get started"}
+        </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -70,15 +89,28 @@ export default function SignInForm() {
           disabled={isLoading}
           className="w-full rounded-md bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-600 disabled:opacity-70 disabled:cursor-not-allowed"
         >
-          {isLoading ? "Signing in..." : "Sign in"}
+          {isLoading 
+            ? (isLogin ? "Signing in..." : "Signing up...") 
+            : (isLogin ? "Sign in" : "Sign up")}
         </button>
       </form>
 
       <div className="mt-6 text-center text-sm text-gray-600 mb-6">
-        Don't have an account?{" "}
-        <a href="#" className="text-indigo-600 hover:text-indigo-500">
-          Sign up
-        </a>
+        {isLogin ? (
+          <>
+            Don't have an account?{" "}
+            <button type="button" onClick={() => setMode('register')} className="text-indigo-600 hover:text-indigo-500 font-medium">
+              Sign up
+            </button>
+          </>
+        ) : (
+          <>
+            Already have an account?{" "}
+            <button type="button" onClick={() => setMode('login')} className="text-indigo-600 hover:text-indigo-500 font-medium">
+              Sign in
+            </button>
+          </>
+        )}
       </div>
 
       <div className="relative mb-6">
