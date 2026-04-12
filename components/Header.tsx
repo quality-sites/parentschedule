@@ -44,12 +44,12 @@ export default function Header() {
             </>
           ) : (
             <>
-              <button 
-                onClick={() => signIn()}
+              <Link 
+                href="/auth/signin"
                 className="text-sm font-medium text-gray-700 hover:text-indigo-600 transition-colors"
               >
                 Log In
-              </button>
+              </Link>
               <Link 
                 href="/auth/signin?type=register"
                 className="text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-full shadow-md shadow-indigo-200 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
