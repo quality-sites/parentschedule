@@ -22,6 +22,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
   schedules     Schedule[]
+  auditLogs     AuditLog[]
+  messages      Message[]  @relation("SentMessages")
 }
 
 model Account {
@@ -67,6 +69,9 @@ model Schedule {
   type      String   // e.g., "50/50", "every_other_weekend", "custom"
   data      String   // JSON string storing complex rules
   events    Event[]
+  shares    ScheduleShare[]
+  logs      AuditLog[]
+  messages  Message[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -84,3 +89,39 @@ model Event {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
+
+model ScheduleShare {
+  id          String   @id @default(cuid())
+  scheduleId  String
+  schedule    Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  email       String   // The invited co-parent's email
+  role        String   @default("VIEWER") // "VIEWER" or "EDITOR"
+  status      String   @default("PENDING") // "PENDING" or "ACCEPTED"
+  invitedAt   DateTime @default(now())
+  acceptedAt  DateTime?
+
+  @@unique([scheduleId, email])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  scheduleId  String
+  schedule    Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action      String   // e.g., "Schedule Configuration Updated"
+  details     String?  // JSON holding the exact payload that was saved
+  createdAt   DateTime @default(now())
+}
+
+model Message {
+  id          String   @id @default(cuid())
+  scheduleId  String
+  schedule    Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  senderId    String
+  sender      User     @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  content     String
+  createdAt   DateTime @default(now()) // Immutable timestamp
+}
+
+

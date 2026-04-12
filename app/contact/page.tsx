@@ -1,3 +1,5 @@
+import { AmazonAffiliateProducts } from '@/components/AmazonAffiliateProducts';
+
 export default function Contact() {
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl min-h-[60vh]" style={{ paddingTop: '8rem', paddingBottom: '4rem' }}>
@@ -20,6 +22,10 @@ export default function Contact() {
           Send Message
         </button>
       </form>
+      
+      <div className="mt-16 pt-12 border-t border-gray-100">
+        <AmazonAffiliateProducts variant="grid" title="Gear for Co-Parents" maxProducts={3} />
+      </div>
     </div>
   );
 }

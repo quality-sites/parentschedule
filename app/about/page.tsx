@@ -1,3 +1,5 @@
+import { AmazonAffiliateProducts } from '@/components/AmazonAffiliateProducts';
+
 export default function About() {
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl min-h-[60vh]" style={{ paddingTop: '8rem', paddingBottom: '4rem' }}>
@@ -11,6 +13,10 @@ export default function About() {
         Recognizing that many other parents share this exact struggle, Parent Schedule is now 
         available to everyone. Our goal is to simply reduce friction and make planning as smooth as possible.
       </p>
+
+      <div className="mt-16 pt-12 border-t border-gray-100">
+        <AmazonAffiliateProducts variant="grid" title="Recommended Products" maxProducts={3} />
+      </div>
     </div>
   );
 }

@@ -29,6 +29,15 @@ export async function POST(req: Request) {
       },
     });
 
+    await prisma.auditLog.create({
+      data: {
+        scheduleId: schedule.id,
+        userId: user.id,
+        action: "Initial Schedule Created",
+        details: JSON.stringify({ title, type, data: JSON.parse(data) }),
+      }
+    });
+
     return NextResponse.json(schedule, { status: 201 });
   } catch (err) {
     console.error(err);
@@ -48,19 +57,39 @@ export async function PUT(req: Request) {
       include: { schedules: true },
     });
 
-    if (!user || user.schedules.length === 0) {
-      return NextResponse.json({ error: "Schedule not found" }, { status: 404 });
+    const sharedSchedules = await prisma.scheduleShare.findMany({
+      where: { email: session.user.email, role: "EDITOR" },
+      include: { schedule: true },
+    });
+
+    if (!user && sharedSchedules.length === 0) {
+       return NextResponse.json({ error: "Schedule not found" }, { status: 404 });
+    }
+
+    const targetScheduleId = user?.schedules?.[0]?.id || sharedSchedules?.[0]?.schedule?.id;
+
+    if (!targetScheduleId) {
+      return NextResponse.json({ error: "No editable schedule found" }, { status: 404 });
     }
 
     const { title, type, data } = await req.json();
 
     const schedule = await prisma.schedule.update({
-      where: { id: user.schedules[0].id },
+      where: { id: targetScheduleId },
       data: {
         title,
         type,
         data,
       },
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        scheduleId: targetScheduleId,
+        userId: user!.id,
+        action: "Schedule Configuration Updated",
+        details: JSON.stringify({ title, type, data: JSON.parse(data) }),
+      }
     });
 
     return NextResponse.json(schedule, { status: 200 });

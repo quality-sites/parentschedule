@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useSession, signIn } from 'next-auth/react';
-import AdBanner from '../components/AdBanner';
+import { AmazonAffiliateProducts } from '@/components/AmazonAffiliateProducts';
 
 export default function LandingPage() {
   const { data: session } = useSession();
@@ -51,8 +51,8 @@ export default function LandingPage() {
       </section>
 
       {/* Primary Ad Banner */}
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <AdBanner text="Sponsored Placement" />
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-transparent pt-8">
+        <AmazonAffiliateProducts variant="carousel" title="Products for Co-Parents" maxProducts={6} />
       </div>
 
       {/* Features Showcase */}
@@ -110,7 +110,7 @@ export default function LandingPage() {
       
       {/* Secondary Ad Banner */}
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 mb-20">
-        <AdBanner text="Premium Partner Placement" />
+        <AmazonAffiliateProducts variant="grid" title="Featured Gear" maxProducts={3} />
       </div>
 
     </div>

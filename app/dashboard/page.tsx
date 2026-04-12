@@ -3,11 +3,11 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import timeGridPlugin from '@fullcalendar/timegrid'
-import { customStartDate } from '../constants/constants';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Link from 'next/link';
+import { AmazonAffiliateProducts } from '@/components/AmazonAffiliateProducts';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -46,6 +46,15 @@ export default function Dashboard() {
               Print
             </button>
             <Link 
+              href="/dashboard/chat" 
+              className="inline-flex items-center gap-x-2 rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.84 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
+              </svg>
+              Chat
+            </Link>
+            <Link 
               href="/dashboard/settings" 
               className="inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
@@ -68,10 +77,54 @@ export default function Dashboard() {
               }}
               events="/api/events"
               initialView="dayGridMonth"
-              initialDate={customStartDate}
               height="auto"
               contentHeight={600}
+              eventContent={(info) => {
+                let timeText = info.timeText;
+                
+                // Hide purely default midnight stamps (12a / 12:00a) 
+                if (timeText && timeText.replace(/\s/g, '').toLowerCase().startsWith('12a')) {
+                  timeText = '';
+                }
+
+                return (
+                  <div className="flex px-1 w-full overflow-hidden">
+                    {timeText && <div className="fc-event-time font-semibold mr-1 flex-shrink-0">{timeText}</div>}
+                    <div className="fc-event-title whitespace-normal break-words leading-snug">{info.event.title}</div>
+                  </div>
+                );
+              }}
+              eventClick={(info) => {
+                const type = info.event.extendedProps?.type?.toLowerCase();
+                const isConfigurable = info.event.extendedProps?.configurable === true || type === 'override';
+                
+                if (!isConfigurable) return;
+                
+                const year = info.event.start?.getFullYear();
+                const yearParam = year ? `&year=${year}` : '';
+
+                if (type === 'routine') {
+                  router.push(`/dashboard/settings?tab=routines${yearParam}`);
+                } else if (type === 'override') {
+                  router.push(`/dashboard/settings?tab=exceptions${yearParam}`);
+                } else {
+                  router.push(`/dashboard/settings?tab=events${yearParam}`);
+                }
+              }}
+              eventMouseEnter={(info) => {
+                const type = info.event.extendedProps?.type?.toLowerCase();
+                const isConfigurable = info.event.extendedProps?.configurable === true || type === 'override';
+                if (isConfigurable) {
+                  info.el.style.cursor = 'pointer';
+                  info.el.title = 'Click to configure this rule';
+                }
+              }}
             />
+        </div>
+        
+        {/* Monetization Ad Block */}
+        <div className="mt-12 bg-transparent rounded-xl p-4 print:hidden">
+          <AmazonAffiliateProducts variant="carousel" title="Recommended for Co-Parents" maxProducts={6} />
         </div>
       </div>
     </div>

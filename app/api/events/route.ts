@@ -14,9 +14,14 @@ export async function GET(req: Request) {
 
   const userId = (session.user as any).id;
   
-  // Fetch schedules for this user
+  // Fetch schedules for this user (both owned and shared with them)
   const schedules = await prisma.schedule.findMany({
-    where: { userId },
+    where: { 
+      OR: [
+        { userId },
+        { shares: { some: { email: session.user.email } } }
+      ]
+    },
     include: { events: true }
   });
 
