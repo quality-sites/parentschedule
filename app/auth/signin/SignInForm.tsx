@@ -35,12 +35,14 @@ export default function SignInForm() {
       redirect: false,
       email,
       password,
+      mode: isLogin ? 'login' : 'register'
     });
 
     setIsLoading(false);
 
     if (res?.error) {
-      setError("Invalid email or password");
+      // res.error contains the exact error string thrown from backend
+      setError(res.error);
     } else {
       router.push("/dashboard");
       router.refresh();

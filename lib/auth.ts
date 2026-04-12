@@ -44,17 +44,34 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: 'Email', type: 'text', placeholder: 'parent@example.com' },
         password: { label: 'Password', type: 'password' },
+        mode: { type: 'text' }
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
+
+        const isRegistering = credentials.mode === 'register';
 
         let user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
 
-        if (!user || !user.password) {
-          // Auto-register users for dev
+        // 1. REGISTRATION MODE
+        if (isRegistering) {
+          if (user && user.password) {
+             throw new Error("Account already exists with this email.");
+          }
           const hashedPassword = await bcrypt.hash(credentials.password, 10);
+          
+          if (user && !user.password) {
+             // User exists (via Google/Apple) but has no password. Add password to their account.
+             user = await prisma.user.update({
+               where: { email: credentials.email },
+               data: { password: hashedPassword }
+             });
+             return user as any;
+          }
+          
+          // Brand new user
           user = await prisma.user.create({
             data: {
               email: credentials.email,
@@ -65,8 +82,15 @@ export const authOptions: NextAuthOptions = {
           return user as any;
         }
 
+        // 2. LOGIN MODE
+        if (!user || !user.password) {
+          throw new Error("Invalid email or password");
+        }
+
         const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
-        if (!isPasswordValid) return null;
+        if (!isPasswordValid) {
+          throw new Error("Invalid email or password");
+        }
 
         return user as any;
       },
