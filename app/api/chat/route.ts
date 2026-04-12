@@ -105,7 +105,7 @@ export async function POST(req: Request) {
           targetEmails = fullSchedule.shares.map(s => s.email);
        } else {
           // A Co-parent is sending. Email the owner.
-          targetEmails = [fullSchedule.user.email];
+          if (fullSchedule.user.email) targetEmails = [fullSchedule.user.email];
        }
 
        // Fire and forget
